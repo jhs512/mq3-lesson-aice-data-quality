@@ -1,0 +1,647 @@
+{
+  "schema_version": 1,
+  "id": "aice-data-quality",
+  "revision": "v1.0.0",
+  "title": "빈칸·중복·이상치 진단하기",
+  "description": "빈칸·중복·이상치를 찾아 지우거나 채워요. 처리 전후 행 수를 늘 확인해요. 필수 문제 8개와 선택 도전 2개예요.",
+  "sources": [
+    "https://aice.study/info/aice/asso",
+    "https://pandas.pydata.org/docs/user_guide/missing_data.html"
+  ],
+  "sections": [],
+  "review_enabled": false,
+  "tasks": [
+    {
+      "id": "count-blanks",
+      "title": "열마다 빈칸이 몇 개일까요?",
+      "goal": "`isna()`는 칸마다 빈칸(NaN)이면 True를 돌려줘요.\nTrue는 1, False는 0으로 더해져요.\n그래서 `.sum()`을 붙이면 열마다 빈칸 수가 나와요.\n\n자, 먼저 실행해서 열마다 True가 몇 개인지 세어 보세요.\nresult 줄의 `df.isna()` 뒤에 `.sum()`을 붙이세요.\n다시 실행해서 열마다 나온 숫자가 센 개수와 맞는지 봐요.\n맨 위 행 수와 견주면 빈칸이 얼마나 많은지 보여요. 빈칸이 없는 열은 0이에요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# isna()는 칸마다 빈칸이면 True, 값이 있으면 False예요.\n# 뒤에 sum()을 붙이면 열마다 True를 더해 빈칸 수가 돼요.\nresult = df.isna()\n# 결과를 화면에서 확인해요.\nprint(result)\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# isna()는 칸마다 빈칸이면 True, 값이 있으면 False예요.\n# 뒤에 sum()을 붙이면 열마다 True를 더해 빈칸 수가 돼요.\nresult = df.isna().sum()\n# 결과를 화면에서 확인해요.\nprint(result)\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "13\norder_id    0\narea        3\nminutes     2\nprice       0\ndtype: int64"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`result = df.isna().sum()`으로 바꿔요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# isna()는 칸마다 빈칸이면 True, 값이 있으면 False예요.\n# 뒤에 sum()을 붙이면 열마다 True를 더해 빈칸 수가 돼요.\nresult = df.isna()\n# 결과를 화면에서 확인해요.\nprint(result)\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요.     False   True    False  False"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `count()`를 쓰면 빈칸이 아니라 값이 있는 칸을 세요."
+        },
+        {
+          "action": "patch_code",
+          "before": "result = df.isna()",
+          "after": "result = df.isna().sum()",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 2 / price       0 / dtype: int64"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 처리 전 행 수예요.\\nprint(len(df))\\n# isna()는 칸마다 빈칸이면 True, 값이 있으면 False예요.\\n# 뒤에 sum()을 붙이면 열마다 True를 더해 빈칸 수가 돼요.\\nresult = df.isna().sum()\\n# 결과를 화면에서 확인해요.\\nprint(result)\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['result']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "drop-blank-rows",
+      "title": "한 열의 빈칸만 보고 지워요",
+      "goal": "`dropna()`는 빈칸이 하나라도 있는 행을 통째로 지워요.\n`subset=['열 이름']`을 넣으면 그 열의 빈칸만 따져요.\n지운 뒤에는 행 수를 다시 세서 얼마나 줄었는지 봐요.\n\n배달 시간이 빈 주문만 지우려고 해요. 지역 빈칸은 남겨요.\n먼저 실행해서 처리 전후 행 수를 보세요.\n`dropna()` 괄호 안에 `subset=['minutes']`를 넣으세요.\n다시 실행해서 행 수와 area 열에 남은 NaN을 비교해요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# 빈칸을 보고 행을 지운 새 표를 담아요.\n# 괄호가 비면 모든 열의 빈칸을 따져요.\nresult = df.dropna()\n# 처리 후 남은 표와 행 수를 확인해요.\nprint(result)\nprint(len(result))\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# 빈칸을 보고 행을 지운 새 표를 담아요.\n# 괄호가 비면 모든 열의 빈칸을 따져요.\nresult = df.dropna(subset=['minutes'])\n# 처리 후 남은 표와 행 수를 확인해요.\nprint(result)\nprint(len(result))\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "13\n   order_id   area  minutes  price\n0       A01  north     25.0  14000\n1       A02  south     31.0  22000\n2       A03    NaN     18.0  17000\n4       A05  north     22.0  98000\n5       A06   east    140.0  19000\n6       A03    NaN     18.0  17000\n8       A08   east     27.0  34000\n9       A09  south     20.0  21000\n10      A10  north     35.0  13000\n11      A09  south     20.0  21000\n12      A11    NaN     29.0  25000\n11"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`df.dropna(subset=['minutes'])`로 바꿔요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# 빈칸을 보고 행을 지운 새 표를 담아요.\n# 괄호가 비면 모든 열의 빈칸을 따져요.\nresult = df.dropna()\n# 처리 후 남은 표와 행 수를 확인해요.\nprint(result)\nprint(len(result))\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요.   A09  south     20.0  21000 / 8"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `subset=` 없이 `['minutes']`만 넣으면 TypeError가 나요."
+        },
+        {
+          "action": "patch_code",
+          "before": "df.dropna()",
+          "after": "df.dropna(subset=['minutes'])",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요.  A11    NaN     29.0  25000 / 11"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 처리 전 행 수예요.\\nprint(len(df))\\n# 빈칸을 보고 행을 지운 새 표를 담아요.\\n# 괄호가 비면 모든 열의 빈칸을 따져요.\\nresult = df.dropna(subset=['minutes'])\\n# 처리 후 남은 표와 행 수를 확인해요.\\nprint(result)\\nprint(len(result))\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['result']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "fill-median",
+      "title": "숫자 빈칸은 중앙값으로 채워요",
+      "goal": "`fillna(값)`은 빈칸(NaN)에 그 값을 넣어요.\n0으로 채우면 없던 값을 0으로 꾸며서 평균이 내려가요.\n평균은 큰 값 하나에 끌려가니, 숫자 빈칸은 중앙값으로 많이 채워요.\n\n먼저 실행해서 0으로 채운 자리와 평균을 보세요.\nfillna 괄호 안의 0을 `df['minutes'].median()`으로 바꾸세요.\n다시 실행해서 채운 값과 평균을 비교해요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 채우기 전 값을 봐요. NaN이 빈칸이에요.\nprint(df['minutes'])\n# 빈칸을 괄호 안 값으로 채워 열에 다시 담아요.\ndf['minutes'] = df['minutes'].fillna(0)\n# 채운 뒤의 열과 평균을 확인해요.\nresult = df['minutes']\nprint(result)\nprint(result.mean())\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 채우기 전 값을 봐요. NaN이 빈칸이에요.\nprint(df['minutes'])\n# 빈칸을 괄호 안 값으로 채워 열에 다시 담아요.\ndf['minutes'] = df['minutes'].fillna(df['minutes'].median())\n# 채운 뒤의 열과 평균을 확인해요.\nresult = df['minutes']\nprint(result)\nprint(result.mean())\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "0      25.0\n1      31.0\n2      18.0\n3       NaN\n4      22.0\n5     140.0\n6      18.0\n7       NaN\n8      27.0\n9      20.0\n10     35.0\n11     20.0\n12     29.0\nName: minutes, dtype: float64\n0      25.0\n1      31.0\n2      18.0\n3      25.0\n4      22.0\n5     140.0\n6      18.0\n7      25.0\n8      27.0\n9      20.0\n10     35.0\n11     20.0\n12     29.0\nName: minutes, dtype: float64\n33.46153846153846"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`df['minutes'].fillna(df['minutes'].median())` 모양이에요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 채우기 전 값을 봐요. NaN이 빈칸이에요.\nprint(df['minutes'])\n# 빈칸을 괄호 안 값으로 채워 열에 다시 담아요.\ndf['minutes'] = df['minutes'].fillna(0)\n# 채운 뒤의 열과 평균을 확인해요.\nresult = df['minutes']\nprint(result)\nprint(result.mean())\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. pe: float64 / 29.615384615384617"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `median` 뒤 괄호를 빼면 숫자 대신 함수가 빈칸에 들어가요."
+        },
+        {
+          "action": "patch_code",
+          "before": "fillna(0)",
+          "after": "fillna(df['minutes'].median())",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. ype: float64 / 33.46153846153846"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 채우기 전 값을 봐요. NaN이 빈칸이에요.\\nprint(df['minutes'])\\n# 빈칸을 괄호 안 값으로 채워 열에 다시 담아요.\\ndf['minutes'] = df['minutes'].fillna(df['minutes'].median())\\n# 채운 뒤의 열과 평균을 확인해요.\\nresult = df['minutes']\\nprint(result)\\nprint(result.mean())\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['result']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "fill-mode",
+      "title": "글자 빈칸은 최빈값으로 채워요",
+      "goal": "글자 열은 평균을 못 구해요. 가장 많이 나온 값(최빈값)이나 '모름'으로 채워요.\n`mode()`는 최빈값을 목록(Series)으로 돌려줘요. 동률이면 여럿이거든요.\nfillna에 목록을 넣으면 인덱스가 같은 행끼리 짝지어 채워요.\n\n먼저 실행해서 area의 빈칸이 그대로인지 보세요.\n최빈값 목록은 인덱스 0뿐이에요. 0번 행은 빈칸이 아니라서 안 채워졌죠?\nfillna 괄호 안 `mode()` 바로 뒤에 `[0]`을 붙여 첫 값을 꺼내세요.\n다시 실행해서 남은 빈칸 수를 비교해요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 가장 많이 나온 지역이에요. 왼쪽 0은 인덱스예요.\nprint(df['area'].mode())\n# area의 빈칸을 최빈값으로 채워 다시 담아요.\ndf['area'] = df['area'].fillna(df['area'].mode())\n# 채운 뒤의 지역 열을 확인해요.\nresult = df['area']\nprint(result)\n# area에 남은 빈칸 수예요.\nprint(result.isna().sum())\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 가장 많이 나온 지역이에요. 왼쪽 0은 인덱스예요.\nprint(df['area'].mode())\n# area의 빈칸을 최빈값으로 채워 다시 담아요.\ndf['area'] = df['area'].fillna(df['area'].mode()[0])\n# 채운 뒤의 지역 열을 확인해요.\nresult = df['area']\nprint(result)\n# area에 남은 빈칸 수예요.\nprint(result.isna().sum())\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "0    north\nName: area, dtype: str\n0     north\n1     south\n2     north\n3      east\n4     north\n5      east\n6     north\n7     north\n8      east\n9     south\n10    north\n11    south\n12    north\nName: area, dtype: str\n0"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`df['area'].fillna(df['area'].mode()[0])`처럼 써요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 가장 많이 나온 지역이에요. 왼쪽 0은 인덱스예요.\nprint(df['area'].mode())\n# area의 빈칸을 최빈값으로 채워 다시 담아요.\ndf['area'] = df['area'].fillna(df['area'].mode())\n# 채운 뒤의 지역 열을 확인해요.\nresult = df['area']\nprint(result)\n# area에 남은 빈칸 수예요.\nprint(result.isna().sum())\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. NaN / Name: area, dtype: str / 3"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. 화면에 보인 지역 이름을 직접 적으면 자료가 바뀔 때 틀려요."
+        },
+        {
+          "action": "patch_code",
+          "before": "fillna(df['area'].mode())",
+          "after": "fillna(df['area'].mode()[0])",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. rth / Name: area, dtype: str / 0"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 가장 많이 나온 지역이에요. 왼쪽 0은 인덱스예요.\\nprint(df['area'].mode())\\n# area의 빈칸을 최빈값으로 채워 다시 담아요.\\ndf['area'] = df['area'].fillna(df['area'].mode()[0])\\n# 채운 뒤의 지역 열을 확인해요.\\nresult = df['area']\\nprint(result)\\n# area에 남은 빈칸 수예요.\\nprint(result.isna().sum())\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['result']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "drop-duplicates",
+      "title": "같은 주문이 두 번 들어갔어요",
+      "goal": "`duplicated()`는 모든 열 값이 같은 행이 위에 이미 있으면 True예요.\n처음 나온 행은 False라서 남아요.\n`drop_duplicates()`는 True인 행을 뺀 새 표를 돌려줘요. df 자체는 그대로예요.\n\n먼저 실행해서 True인 행과 처리 전후 행 수를 보세요.\n지웠는데 행 수가 그대로죠?\n`df.drop_duplicates()` 앞에 `df = `를 붙여 다시 담으세요.\n다시 실행해서 줄어든 행 수를 True 개수와 비교해요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 모든 열 값이 같은 행이 위에 이미 있으면 True예요.\nprint(df.duplicated())\n# True를 더하면 중복 행의 수예요.\nprint(df.duplicated().sum())\n# 처리 전 행 수예요.\nprint(len(df))\n# 중복 행을 지워요.\ndf.drop_duplicates()\n# 처리 후 행 수를 확인해요.\nprint(len(df))\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 모든 열 값이 같은 행이 위에 이미 있으면 True예요.\nprint(df.duplicated())\n# True를 더하면 중복 행의 수예요.\nprint(df.duplicated().sum())\n# 처리 전 행 수예요.\nprint(len(df))\n# 중복 행을 지워요.\ndf = df.drop_duplicates()\n# 처리 후 행 수를 확인해요.\nprint(len(df))\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "0     False\n1     False\n2     False\n3     False\n4     False\n5     False\n6      True\n7     False\n8     False\n9     False\n10    False\n11     True\n12    False\ndtype: bool\n2\n13\n11"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`df = df.drop_duplicates()`로 바꿔요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 모든 열 값이 같은 행이 위에 이미 있으면 True예요.\nprint(df.duplicated())\n# True를 더하면 중복 행의 수예요.\nprint(df.duplicated().sum())\n# 처리 전 행 수예요.\nprint(len(df))\n# 중복 행을 지워요.\ndf.drop_duplicates()\n# 처리 후 행 수를 확인해요.\nprint(len(df))\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. alse / dtype: bool / 2 / 13 / 13"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `df[df.duplicated()]`는 지운 표가 아니라 중복 행만 고른 표예요."
+        },
+        {
+          "action": "patch_code",
+          "before": "df.drop_duplicates()",
+          "after": "df = df.drop_duplicates()",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. alse / dtype: bool / 2 / 13 / 11"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 모든 열 값이 같은 행이 위에 이미 있으면 True예요.\\nprint(df.duplicated())\\n# True를 더하면 중복 행의 수예요.\\nprint(df.duplicated().sum())\\n# 처리 전 행 수예요.\\nprint(len(df))\\n# 중복 행을 지워요.\\ndf = df.drop_duplicates()\\n# 처리 후 행 수를 확인해요.\\nprint(len(df))\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['df']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "quartiles",
+      "title": "가운데 절반의 폭, IQR",
+      "goal": "`quantile(0.25)`는 작은 값부터 25% 자리의 값이에요. Q1이라고 해요.\n`quantile(0.75)`는 75% 자리의 값, Q3예요.\nQ3 - Q1을 사분위수 범위(IQR)라고 해요. 가운데 절반이 퍼진 폭이에요.\n\n먼저 실행해서 q1, q3, iqr을 보세요. iqr이 0이죠?\nq3 줄은 q1 줄을 복사해 만들었어요.\nq3 줄의 `0.25`를 `0.75`로 바꾸세요.\n다시 실행해서 describe의 25%, 75% 줄과 비교해요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 가격 분포를 요약해요. 25%와 75% 줄을 봐 두세요.\nprint(df['price'].describe())\n# 작은 값부터 25% 자리의 값(Q1)이에요.\nq1 = df['price'].quantile(0.25)\n# 75% 자리의 값(Q3)이에요.\nq3 = df['price'].quantile(0.25)\n# 가운데 절반이 퍼진 폭(IQR)이에요.\niqr = q3 - q1\nprint(q1, q3, iqr)\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 가격 분포를 요약해요. 25%와 75% 줄을 봐 두세요.\nprint(df['price'].describe())\n# 작은 값부터 25% 자리의 값(Q1)이에요.\nq1 = df['price'].quantile(0.25)\n# 75% 자리의 값(Q3)이에요.\nq3 = df['price'].quantile(0.75)\n# 가운데 절반이 퍼진 폭(IQR)이에요.\niqr = q3 - q1\nprint(q1, q3, iqr)\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "count       13.000000\nmean     24192.307692\nstd      23439.228569\nmin       1500.000000\n25%      14000.000000\n50%      19000.000000\n75%      22000.000000\nmax      98000.000000\nName: price, dtype: float64\n14000.0 22000.0 8000.0"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`q3 = df['price'].quantile(0.75)`로 바꿔요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 가격 분포를 요약해요. 25%와 75% 줄을 봐 두세요.\nprint(df['price'].describe())\n# 작은 값부터 25% 자리의 값(Q1)이에요.\nq1 = df['price'].quantile(0.25)\n# 75% 자리의 값(Q3)이에요.\nq3 = df['price'].quantile(0.25)\n# 가운데 절반이 퍼진 폭(IQR)이에요.\niqr = q3 - q1\nprint(q1, q3, iqr)\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. e: float64 / 14000.0 14000.0 0.0"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `quantile(75)`처럼 퍼센트 숫자를 넣으면 ValueError가 나요."
+        },
+        {
+          "action": "patch_code",
+          "before": "q3 = df['price'].quantile(0.25)",
+          "after": "q3 = df['price'].quantile(0.75)",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. float64 / 14000.0 22000.0 8000.0"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 가격 분포를 요약해요. 25%와 75% 줄을 봐 두세요.\\nprint(df['price'].describe())\\n# 작은 값부터 25% 자리의 값(Q1)이에요.\\nq1 = df['price'].quantile(0.25)\\n# 75% 자리의 값(Q3)이에요.\\nq3 = df['price'].quantile(0.75)\\n# 가운데 절반이 퍼진 폭(IQR)이에요.\\niqr = q3 - q1\\nprint(q1, q3, iqr)\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['q1', 'q3', 'iqr']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "iqr-bounds",
+      "title": "경계 안의 행만 남겨요",
+      "goal": "아래 경계는 `q1 - 1.5 * iqr`, 위 경계는 `q3 + 1.5 * iqr`이에요.\n두 경계 밖의 값을 이상치로 봐요. 경계와 같은 값은 남겨요.\n상자그림에서 따로 찍힌 점도 같은 기준이에요.\n\n먼저 실행해서 두 경계와 처리 전후 행 수를 보세요.\n지금 조건은 위 경계만 따져요. 남은 가격을 low와 견줘 보세요.\nkept 줄의 조건을 `(df['price'] >= low) & (df['price'] <= high)`로 바꾸세요.\n다시 실행해서 남은 행 수를 비교해요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# Q1, Q3, IQR을 구해요.\nq1 = df['price'].quantile(0.25)\nq3 = df['price'].quantile(0.75)\niqr = q3 - q1\n# IQR의 1.5배만큼 바깥에 경계를 둬요.\nlow = q1 - 1.5 * iqr\nhigh = q3 + 1.5 * iqr\nprint(low, high)\n# 처리 전 행 수예요.\nprint(len(df))\n# 경계 안의 행만 남겨요.\nkept = df[df['price'] <= high]\n# 처리 후 남은 표와 행 수를 확인해요.\nprint(kept)\nprint(len(kept))\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# Q1, Q3, IQR을 구해요.\nq1 = df['price'].quantile(0.25)\nq3 = df['price'].quantile(0.75)\niqr = q3 - q1\n# IQR의 1.5배만큼 바깥에 경계를 둬요.\nlow = q1 - 1.5 * iqr\nhigh = q3 + 1.5 * iqr\nprint(low, high)\n# 처리 전 행 수예요.\nprint(len(df))\n# 경계 안의 행만 남겨요.\nkept = df[(df['price'] >= low) & (df['price'] <= high)]\n# 처리 후 남은 표와 행 수를 확인해요.\nprint(kept)\nprint(len(kept))\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "2000.0 34000.0\n13\n   order_id   area  minutes  price\n0       A01  north     25.0  14000\n1       A02  south     31.0  22000\n2       A03    NaN     18.0  17000\n3       A04   east      NaN  12000\n5       A06   east    140.0  19000\n6       A03    NaN     18.0  17000\n8       A08   east     27.0  34000\n9       A09  south     20.0  21000\n10      A10  north     35.0  13000\n11      A09  south     20.0  21000\n12      A11    NaN     29.0  25000\n11"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`kept = df[(df['price'] >= low) & (df['price'] <= high)]` 모양이에요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# Q1, Q3, IQR을 구해요.\nq1 = df['price'].quantile(0.25)\nq3 = df['price'].quantile(0.75)\niqr = q3 - q1\n# IQR의 1.5배만큼 바깥에 경계를 둬요.\nlow = q1 - 1.5 * iqr\nhigh = q3 + 1.5 * iqr\nprint(low, high)\n# 처리 전 행 수예요.\nprint(len(df))\n# 경계 안의 행만 남겨요.\nkept = df[df['price'] <= high]\n# 처리 후 남은 표와 행 수를 확인해요.\nprint(kept)\nprint(len(kept))\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요.  A11    NaN     29.0  25000 / 12"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `>`와 `<`를 쓰면 경계와 딱 같은 값까지 지워져요."
+        },
+        {
+          "action": "patch_code",
+          "before": "df['price'] <= high",
+          "after": "(df['price'] >= low) & (df['price'] <= high)",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요.  A11    NaN     29.0  25000 / 11"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# Q1, Q3, IQR을 구해요.\\nq1 = df['price'].quantile(0.25)\\nq3 = df['price'].quantile(0.75)\\niqr = q3 - q1\\n# IQR의 1.5배만큼 바깥에 경계를 둬요.\\nlow = q1 - 1.5 * iqr\\nhigh = q3 + 1.5 * iqr\\nprint(low, high)\\n# 처리 전 행 수예요.\\nprint(len(df))\\n# 경계 안의 행만 남겨요.\\nkept = df[(df['price'] >= low) & (df['price'] <= high)]\\n# 처리 후 남은 표와 행 수를 확인해요.\\nprint(kept)\\nprint(len(kept))\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['kept']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "clean-order",
+      "title": "중복부터 지우고 채워요",
+      "goal": "중복 행은 같은 주문이 두 번 들어간 거예요.\n지우기 전에 중앙값을 구하면 그 주문이 두 번 세어져요.\n그래서 지울 행을 먼저 지우고, 남은 값으로 채워요.\n\n먼저 실행해서 fill 값과 처리 후 표를 보세요.\n중복을 지우는 두 줄(주석 한 줄과 코드 한 줄)을 찾으세요.\n그 두 줄을 fill 위의 주석보다 위로 옮기세요.\n다시 실행해서 fill 값을 비교해요. 빈칸이던 A04, A07의 minutes도 봐요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 배달 시간 빈칸에 넣을 중앙값이에요.\nfill = df['minutes'].median()\n# 빈칸을 그 값으로 채워 다시 담아요.\ndf['minutes'] = df['minutes'].fillna(fill)\n# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 처리 후 행 수와 표, 빈칸에 넣은 값을 확인해요.\nprint(len(df))\nprint(df)\nprint(fill)\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 배달 시간 빈칸에 넣을 중앙값이에요.\nfill = df['minutes'].median()\n# 빈칸을 그 값으로 채워 다시 담아요.\ndf['minutes'] = df['minutes'].fillna(fill)\n# 처리 후 행 수와 표, 빈칸에 넣은 값을 확인해요.\nprint(len(df))\nprint(df)\nprint(fill)\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "11\n   order_id   area  minutes  price\n0       A01  north     25.0  14000\n1       A02  south     31.0  22000\n2       A03    NaN     18.0  17000\n3       A04   east     27.0  12000\n4       A05  north     22.0  98000\n5       A06   east    140.0  19000\n7       A07  north     27.0   1500\n8       A08   east     27.0  34000\n9       A09  south     20.0  21000\n10      A10  north     35.0  13000\n12      A11    NaN     29.0  25000\n27.0"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "중복을 지우는 두 줄을 read_csv 줄 바로 아래로 옮겨요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 배달 시간 빈칸에 넣을 중앙값이에요.\nfill = df['minutes'].median()\n# 빈칸을 그 값으로 채워 다시 담아요.\ndf['minutes'] = df['minutes'].fillna(fill)\n# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 처리 후 행 수와 표, 빈칸에 넣은 값을 확인해요.\nprint(len(df))\nprint(df)\nprint(fill)\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 11    NaN     29.0  25000 / 25.0"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. fill을 구한 줄보다 아래로 옮기면 중복이 섞인 중앙값을 써요."
+        },
+        {
+          "action": "patch_code",
+          "before": "# 배달 시간 빈칸에 넣을 중앙값이에요.\nfill = df['minutes'].median()\n# 빈칸을 그 값으로 채워 다시 담아요.\ndf['minutes'] = df['minutes'].fillna(fill)\n# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()",
+          "after": "# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 배달 시간 빈칸에 넣을 중앙값이에요.\nfill = df['minutes'].median()\n# 빈칸을 그 값으로 채워 다시 담아요.\ndf['minutes'] = df['minutes'].fillna(fill)",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 11    NaN     29.0  25000 / 27.0"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 같은 주문이 두 번 들어간 행을 지워요.\\ndf = df.drop_duplicates()\\n# 배달 시간 빈칸에 넣을 중앙값이에요.\\nfill = df['minutes'].median()\\n# 빈칸을 그 값으로 채워 다시 담아요.\\ndf['minutes'] = df['minutes'].fillna(fill)\\n# 처리 후 행 수와 표, 빈칸에 넣은 값을 확인해요.\\nprint(len(df))\\nprint(df)\\nprint(fill)\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['df', 'fill']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "clean-pipeline",
+      "title": "도전 · 정리한 뒤 행 수와 평균",
+      "goal": "중복 지우기, IQR 경계로 이상치 지우기, 중앙값 채우기를 조합해요.\n지울 행을 다 지운 뒤에 남은 값으로 채워요.\n경계는 중복을 지운 표로 다시 구해요. 앞 문제에서 지운 주문이 남을 수도 있어요.\n\n가격이 경계 밖인 주문을 지우는 줄이 빠졌어요.\n경계와 같은 값은 남겨요. 지운 표는 df에 다시 담아요.\n그 줄을 어디에 넣을지가 핵심이에요.\n처리 전후 행 수와 배달 시간 평균을 비교해요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 가격의 Q1, Q3, IQR이에요.\nq1 = df['price'].quantile(0.25)\nq3 = df['price'].quantile(0.75)\niqr = q3 - q1\n# 아래 경계와 위 경계예요.\nlow = q1 - 1.5 * iqr\nhigh = q3 + 1.5 * iqr\n# 배달 시간 빈칸을 남은 값의 중앙값으로 채워요.\ndf['minutes'] = df['minutes'].fillna(df['minutes'].median())\n# 처리 후 행 수와 배달 시간 평균이에요.\ncount = len(df)\nresult = df['minutes'].mean()\nprint(count, result)\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 가격의 Q1, Q3, IQR이에요.\nq1 = df['price'].quantile(0.25)\nq3 = df['price'].quantile(0.75)\niqr = q3 - q1\n# 아래 경계와 위 경계예요.\nlow = q1 - 1.5 * iqr\nhigh = q3 + 1.5 * iqr\n# 경계 밖의 행을 지워요.\ndf = df[(df['price'] >= low) & (df['price'] <= high)]\n# 배달 시간 빈칸을 남은 값의 중앙값으로 채워요.\ndf['minutes'] = df['minutes'].fillna(df['minutes'].median())\n# 처리 후 행 수와 배달 시간 평균이에요.\ncount = len(df)\nresult = df['minutes'].mean()\nprint(count, result)\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "13\n10 38.1"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": false,
+      "hints": [
+        "경계로 지우는 줄은 빈칸을 채우는 줄보다 위에 넣어요. kept가 아니라 df에 담아요.",
+        "high 줄 바로 아래에 `df = df[(df['price'] >= low) & (df['price'] <= high)]`를 넣어요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 처리 전 행 수예요.\nprint(len(df))\n# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 가격의 Q1, Q3, IQR이에요.\nq1 = df['price'].quantile(0.25)\nq3 = df['price'].quantile(0.75)\niqr = q3 - q1\n# 아래 경계와 위 경계예요.\nlow = q1 - 1.5 * iqr\nhigh = q3 + 1.5 * iqr\n# 배달 시간 빈칸을 남은 값의 중앙값으로 채워요.\ndf['minutes'] = df['minutes'].fillna(df['minutes'].median())\n# 처리 후 행 수와 배달 시간 평균이에요.\ncount = len(df)\nresult = df['minutes'].mean()\nprint(count, result)\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 13 / 11 36.45454545454545"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. 경계로 지우는 줄을 채운 뒤에 넣으면 지울 행까지 중앙값에 섞여요."
+        },
+        {
+          "action": "patch_code",
+          "before": "high = q3 + 1.5 * iqr",
+          "after": "high = q3 + 1.5 * iqr\n# 경계 밖의 행을 지워요.\ndf = df[(df['price'] >= low) & (df['price'] <= high)]",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 13 / 10 38.1"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 처리 전 행 수예요.\\nprint(len(df))\\n# 같은 주문이 두 번 들어간 행을 지워요.\\ndf = df.drop_duplicates()\\n# 가격의 Q1, Q3, IQR이에요.\\nq1 = df['price'].quantile(0.25)\\nq3 = df['price'].quantile(0.75)\\niqr = q3 - q1\\n# 아래 경계와 위 경계예요.\\nlow = q1 - 1.5 * iqr\\nhigh = q3 + 1.5 * iqr\\n# 경계 밖의 행을 지워요.\\ndf = df[(df['price'] >= low) & (df['price'] <= high)]\\n# 배달 시간 빈칸을 남은 값의 중앙값으로 채워요.\\ndf['minutes'] = df['minutes'].fillna(df['minutes'].median())\\n# 처리 후 행 수와 배달 시간 평균이에요.\\ncount = len(df)\\nresult = df['minutes'].mean()\\nprint(count, result)\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['count', 'result']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    },
+    {
+      "id": "unknown-share",
+      "title": "도전 · 모르는 지역까지 넣은 비율",
+      "goal": "`value_counts(normalize=True)`는 빈칸을 빼고 비율을 내요.\n빈칸을 '모름'으로 채우면 분모에 들어가요.\n중복 행이 남으면 같은 주문이 두 번 세어져요.\n\n중복을 뺀 주문 중 지역별 비율을 구하세요.\n지역 빈칸은 '모름'으로 채워 함께 세요.\n준비 코드는 두 가지를 빠뜨렸어요. 고칠 곳은 직접 찾아보세요.",
+      "language": "python",
+      "entry_file": "main.py",
+      "starter_code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 지역별 주문 비율을 구해요.\nresult = df['area'].value_counts(normalize=True)\n# 맨 아래 Name의 proportion은 비율이라는 뜻이에요.\nprint(result)\n# 비율을 구한 표의 행 수를 확인해요.\nprint(len(df))\n",
+      "solution": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 모르는 지역은 '모름'으로 채워 다시 담아요.\ndf['area'] = df['area'].fillna('모름')\n# 지역별 주문 비율을 구해요.\nresult = df['area'].value_counts(normalize=True)\n# 맨 아래 Name의 proportion은 비율이라는 뜻이에요.\nprint(result)\n# 비율을 구한 표의 행 수를 확인해요.\nprint(len(df))\n",
+      "files": {
+        "data/deliveries.csv": "order_id,area,minutes,price\nA01,north,25,14000\nA02,south,31,22000\nA03,,18,17000\nA04,east,,12000\nA05,north,22,98000\nA06,east,140,19000\nA03,,18,17000\nA07,north,,1500\nA08,east,27,34000\nA09,south,20,21000\nA10,north,35,13000\nA09,south,20,21000\nA11,,29,25000\n"
+      },
+      "tests": [
+        {
+          "input": "",
+          "expected": "area\nnorth    0.363636\neast     0.272727\nsouth    0.181818\n모름       0.181818\nName: proportion, dtype: float64\n11"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": false,
+      "hints": [
+        "중복 지우기와 '모름' 채우기, 두 가지가 빠졌어요.",
+        "`df['area'] = df['area'].fillna('모름')`처럼 열에 다시 담아요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "import pandas as pd\n\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\ndf = pd.read_csv('data/deliveries.csv')\n# 지역별 주문 비율을 구해요.\nresult = df['area'].value_counts(normalize=True)\n# 맨 아래 Name의 proportion은 비율이라는 뜻이에요.\nprint(result)\n# 비율을 구한 표의 행 수를 확인해요.\nprint(len(df))\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요.  proportion, dtype: float64 / 13"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `fillna('모름')` 결과를 열에 다시 담지 않으면 빈칸이 빠져요."
+        },
+        {
+          "action": "patch_code",
+          "before": "# 지역별 주문 비율을 구해요.",
+          "after": "# 같은 주문이 두 번 들어간 행을 지워요.\ndf = df.drop_duplicates()\n# 모르는 지역은 '모름'으로 채워 다시 담아요.\ndf['area'] = df['area'].fillna('모름')\n# 지역별 주문 비율을 구해요.",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요.  proportion, dtype: float64 / 11"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "checker": "import ast\nimport builtins\nimport contextlib\nimport io\nimport math\nimport os\nfrom pathlib import Path\nimport shutil\nimport sys\nimport tempfile\nimport traceback\nimport warnings\n\nos.environ['MPLBACKEND'] = 'Agg'\n# Grading output is for the verdict only; font and library warnings would bury the reason.\nwarnings.filterwarnings('ignore')\nbuiltins.display = lambda *args, **kwargs: None\nreference = \"import pandas as pd\\n\\n# 직접 만든 배달 자료예요. 실제 주문 자료가 아니에요.\\ndf = pd.read_csv('data/deliveries.csv')\\n# 같은 주문이 두 번 들어간 행을 지워요.\\ndf = df.drop_duplicates()\\n# 모르는 지역은 '모름'으로 채워 다시 담아요.\\ndf['area'] = df['area'].fillna('모름')\\n# 지역별 주문 비율을 구해요.\\nresult = df['area'].value_counts(normalize=True)\\n# 맨 아래 Name의 proportion은 비율이라는 뜻이에요.\\nprint(result)\\n# 비율을 구한 표의 행 수를 확인해요.\\nprint(len(df))\\n\"\ncases = [{}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nB01,,40,18000\\nB02,south,33,26000\\nB03,south,,9750\\nB04,west,28,61000\\nB05,south,36,20000\\nB06,west,24,17000\\nB07,,,23000\\nB05,south,36,20000\\nB08,east,30,16000\\nB09,west,120,19000\\n'}}, {'files': {'data/deliveries.csv': 'order_id,area,minutes,price\\nC01,east,26,15000\\nC02,east,,21000\\nC03,north,31,18000\\nC04,,19,800\\nC05,west,44,24000\\nC06,east,23,16000\\nC07,north,,32000\\nC06,east,23,16000\\nC08,,22,20000\\nC09,west,21,150000\\nC10,east,150,19000\\nC11,north,28,22000\\nC08,,22,20000\\nC12,west,33,17000\\nC13,,,23000\\n'}}]\nnames = ['result']\nbase_files = {'data/deliveries.csv': 'order_id,area,minutes,price\\nA01,north,25,14000\\nA02,south,31,22000\\nA03,,18,17000\\nA04,east,,12000\\nA05,north,22,98000\\nA06,east,140,19000\\nA03,,18,17000\\nA07,north,,1500\\nA08,east,27,34000\\nA09,south,20,21000\\nA10,north,35,13000\\nA09,south,20,21000\\nA11,,29,25000\\n'}\nsource = open(sys.argv[1], encoding='utf8').read()\n\n\nclass Inputs(ast.NodeTransformer):\n    # Replace only the first prepared assignment to each changed name.\n    def __init__(self, values):\n        self.values = values\n        self.seen = set()\n\n    def visit_Assign(self, node):\n        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):\n            name = node.targets[0].id\n            if name in self.values and name not in self.seen:\n                self.seen.add(name)\n                node.value = ast.parse(repr(self.values[name]), mode='eval').body\n        return node\n\n\ndef execute(text, values):\n    tree = ast.fix_missing_locations(Inputs(values).visit(ast.parse(text)))\n    scope = {'__name__': '__main__'}\n    output = io.StringIO()\n    with contextlib.redirect_stdout(output):\n        exec(compile(tree, 'main.py', 'exec'), scope)\n    plt = sys.modules.get('matplotlib.pyplot')\n    if plt is not None:\n        plt.close('all')\n    return output.getvalue().rstrip('\\n'), scope\n\n\ndef same(actual, expected):\n    pd = sys.modules.get('pandas')\n    if pd is not None and isinstance(expected, (pd.DataFrame, pd.Series, pd.Index)):\n        if type(actual) is not type(expected):\n            return False\n        try:\n            if isinstance(expected, pd.DataFrame):\n                pd.testing.assert_frame_equal(actual, expected)\n            elif isinstance(expected, pd.Series):\n                pd.testing.assert_series_equal(actual, expected)\n            else:\n                pd.testing.assert_index_equal(actual, expected)\n            return True\n        except AssertionError:\n            return False\n    np = sys.modules.get('numpy')\n    if np is not None and isinstance(expected, np.ndarray):\n        # Model and scaler outputs: same shape, and values equal up to float rounding.\n        if not isinstance(actual, np.ndarray) or actual.shape != expected.shape:\n            return False\n        if expected.dtype.kind in 'fc':\n            return bool(np.allclose(actual, expected, rtol=1e-7, atol=1e-9, equal_nan=True))\n        return bool(np.array_equal(actual, expected))\n    if isinstance(expected, float) and isinstance(actual, (int, float)):\n        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-12)\n    try:\n        return bool(actual == expected)\n    except Exception:\n        return False\n\n\ndef fail(message):\n    # The learner reads only this message, never the checker's own traceback.\n    print(message, file=sys.stderr)\n    sys.exit(1)\n\n\ndef snapshot(inputs):\n    # Files the run created or changed, such as a saved result CSV.\n    produced = {}\n    for path in Path('.').rglob('*'):\n        if path.is_file() and inputs.get(path.as_posix()) != path.read_bytes():\n            produced[path.as_posix()] = path.read_bytes()\n    return produced\n\n\ndef run_in_fresh_folder(files, text, values):\n    # Each run gets its own copy of the data, so files one run writes never help another.\n    home = os.getcwd()\n    folder = tempfile.mkdtemp(dir=home)\n    try:\n        os.chdir(folder)\n        inputs = {}\n        for path, content in files.items():\n            target = Path(path)\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_text(content, encoding='utf8')\n            inputs[target.as_posix()] = target.read_bytes()\n        output, scope = execute(text, values)\n        return output, scope, snapshot(inputs)\n    finally:\n        os.chdir(home)\n        shutil.rmtree(folder, ignore_errors=True)\n\n\ndef describe(case):\n    parts = [name + ' = ' + repr(value) for name, value in case.items() if name != 'files']\n    parts += [path + ' 내용' for path in case.get('files', {})]\n    return ', '.join(parts)\n\n\nMESSAGES = {'__figures__': '그래프의 종류·축 이름·값이 기준 그래프와 달라요. 바뀐 자료로도 같은 그래프를 그리세요.'}\nfor index, case in enumerate(cases):\n    values = {k: v for k, v in case.items() if k != 'files'}\n    files = {**base_files, **case.get('files', {})}\n    expected, wanted, made = run_in_fresh_folder(files, reference, values)\n    changed = '준비 값을 ' + describe(case) + '(으)로 바꾸면 '\n    try:\n        actual, scope, produced = run_in_fresh_folder(files, source, values)\n    except SystemExit:\n        fail('코드가 exit로 중간에 끝났어요. 끝까지 실행되게 하세요.')\n    except BaseException as error:\n        reason = ''.join(traceback.format_exception_only(type(error), error)).strip()\n        fail(('코드를 실행하면' if index == 0 else changed.rstrip()) + ' 오류가 나요.\\n' + reason)\n    if index == 0:\n        problem = '실행 결과가 기대와 달라요.'\n    else:\n        problem = changed + '결과가 달라요.\\n값이나 자료가 바뀌어도 맞는 방법인지 확인하세요.'\n    if actual != expected:\n        fail(problem + '\\n기대 출력:\\n' + expected[-600:] + '\\n실제 출력:\\n' + actual[-600:])\n    for name in names:\n        if name not in scope:\n            fail(name + '에 결과를 담아 주세요.')\n        if not same(scope[name], wanted[name]):\n            fail(problem + '\\n' + MESSAGES.get(name, name + '의 값이 기대와 달라요.'))\n    for path in sorted(made):\n        if path not in produced:\n            fail(problem + '\\n' + path + ' 파일을 저장하지 않았어요.')\n        if produced[path] != made[path]:\n            fail(problem + '\\n저장한 ' + path + ' 파일의 내용이 기대와 달라요.')\nprint('준비 값과 자료를 바꿔도 같은 원리로 계산했어요.')\n"
+    }
+  ]
+}
